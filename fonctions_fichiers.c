@@ -133,7 +133,7 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
     }
 
       // Chargement des sprites
-    SDL_Surface* surfaceSprite = SDL_LoadBMP("sprites.bmp");
+    SDL_Surface* surfaceSprite = SDL_LoadBMP("photo.bmp");
     SDL_Texture* textureSprite = SDL_CreateTextureFromSurface(renderer, surfaceSprite);
     SDL_FreeSurface(surfaceSprite);
 
@@ -142,10 +142,9 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
     int posX = 0;
     int posY = 0;
 
-
 SDL_Event evenements;
     int terminer = 0;
-    int TAILLE_SPRITE = 105;
+    int TAILLE_SPRITE = 61;
     while (!terminer) {
         while (SDL_PollEvent(&evenements)) {
             switch (evenements.type) {
@@ -159,38 +158,40 @@ SDL_Event evenements;
                     terminer = 1;
                     break;
                 case SDLK_UP:
-                    posY -= TAILLE_SPRITE;
+                    posY -= 10;
+                  //  printf("haut \n ");
                     break;
                 case SDLK_DOWN:
-                    posY += TAILLE_SPRITE;
+                    posY += 10;
                     break;
                 case SDLK_LEFT:
-                    posX -= TAILLE_SPRITE;
+                    posX -= 10;
                     break;
                 case SDLK_RIGHT:
-                    posX += TAILLE_SPRITE;
+                    posX += 10;
                     break;
                 }
                 break;
+
             }
+
         }
-// Afficher le personnage
-       // SDL_Rect srcRect = { 0, 0, TAILLE_SPRITE, TAILLE_SPRITE };
-       // SDL_Rect destRect = { posX, posY, TAILLE_SPRITE, TAILLE_SPRITE };
-      // SDL_RenderCopy(renderer, textureSprite, &srcRect, &destRect);
 
-    SDL_RenderPresent(renderer);
-    SDL_Delay(20); 
+        // Afficher le personnage
+       SDL_Rect srcRect = { 0, 0, TAILLE_SPRITE, TAILLE_SPRITE };
+       SDL_Rect destRect = { posX, posY, TAILLE_SPRITE, TAILLE_SPRITE };
+       SDL_RenderCopy(renderer, textureSprite, &srcRect, &destRect);
 
+        // Afficher la fenêtre et attendre la fermeture
+        SDL_RenderPresent(renderer);
+        SDL_Delay(20); // Attendre 10 secondes avant de fermer la fenêtre
+       
 
-    // Afficher la fenêtre et attendre la fermeture
-    SDL_RenderPresent(renderer);
-    SDL_Delay(10000); // Attendre 10 secondes avant de fermer la fenêtre
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
-}}
+    }
+     SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+}
 
 
 
