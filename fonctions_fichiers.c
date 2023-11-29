@@ -33,7 +33,7 @@ void afficher_tab_2D(char** tab, int n, int m) {
 void taille_fichier(const char* nomFichier, int* nbLig, int* nbCol) {
     FILE* fichier = fopen(nomFichier, "r");
     if (fichier == NULL) {
-        perror("Erreur ");
+        perror("Erreur lors de l'ouverture du fichier");
         exit(EXIT_FAILURE);
     }
     int c;
@@ -121,7 +121,7 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
 
    
       // Chargement des sprites
-    SDL_Surface* surfaceSprite = SDL_LoadBMP("photo.bmp");
+    SDL_Surface* surfaceSprite = SDL_LoadBMP("la.bmp");
     SDL_Texture* textureSprite = SDL_CreateTextureFromSurface(renderer, surfaceSprite);
     SDL_FreeSurface(surfaceSprite);
 
@@ -132,7 +132,7 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
 
 SDL_Event evenements;
     int terminer = 0;
-    int TAILLE_SPRITE = 61;
+    int TAILLE_SPRITE = 30;
     
      while (!terminer) {
         while (SDL_PollEvent(&evenements)) {
@@ -142,35 +142,28 @@ SDL_Event evenements;
                 break;
             case SDL_KEYDOWN:
                 switch (evenements.key.keysym.sym) {
-                case SDLK_UP:
-                if (posY > 0) {
-                     posY -= 10;
+            case SDLK_UP:
+              if (posY > 0 && tab[(posY - 1) / 30][posX / 30] != '6') {
+                 posY -= 10;
+              }
+            break;
+            case SDLK_DOWN:
+                  if (posY + TAILLE_SPRITE < 320 && tab[(posY + TAILLE_SPRITE) / 30][posX / 30] != '6') {
+                  posY += 10;
+                  }
+           break;
+            case SDLK_LEFT:
+                 if (posX > 0 && tab[posY / 30][(posX - 30) / 30] != '6') {
+                  posX -= 10;
                  }
-                 
-                   //SDL_WaitEvent(&evenements);
-                  //  printf("haut \n ");
-                    break;
-                case SDLK_DOWN:
-                    if (posY+TAILLE_SPRITE < 320 ) { 
-                    posY += 10;
-                }
-                    break;
-                case SDLK_LEFT:
-                    if(posX > 0){
-                    posX -= 10;
-
-                }
-
-                
-                    break;
-                case SDLK_RIGHT:
-                     if( posX+TAILLE_SPRITE < 700){
-                     posX += 10;
-                }
-                    break;
-                }
-                break;
-
+             break;
+           case SDLK_RIGHT:
+                if (posX + TAILLE_SPRITE < 700 && tab[posY / 30][(posX + TAILLE_SPRITE) / 30] != '6') {
+                 posX += 10;
+            }
+           break;
+            }
+            break;
             }
 
         }
@@ -197,7 +190,7 @@ SDL_Event evenements;
 
         // Afficher la fenêtre et attendre la fermeture
         SDL_RenderPresent(renderer);
-        SDL_Delay(50); // Attendre 10 secondes avant de fermer la fenêtre
+        SDL_Delay(50); // Attendre 20 secondes avant de fermer la fenêtre
        
        
     }
