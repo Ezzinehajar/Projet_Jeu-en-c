@@ -119,19 +119,7 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
     SDL_FreeSurface(spriteSurface);
 
 
-    // Boucle pour afficher le terrain
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            char caractere = tab[i][j];
-            int indiceSprite = (caractere >= '0' && caractere <= '9') ? caractere - '0' : 0;
-
-            SDL_Rect destRect = { j * 32, i * 32, 32, 32 };
-            SDL_Rect srcRect = { indiceSprite * 32, 0, 32, 32 };
-
-            SDL_RenderCopy(renderer, spriteTexture, &srcRect, &destRect);
-        }
-    }
-
+   
       // Chargement des sprites
     SDL_Surface* surfaceSprite = SDL_LoadBMP("photo.bmp");
     SDL_Texture* textureSprite = SDL_CreateTextureFromSurface(renderer, surfaceSprite);
@@ -144,8 +132,9 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
 
 SDL_Event evenements;
     int terminer = 0;
-    int TAILLE_SPRITE = 61;
-    while (!terminer) {
+    int TAILLE_SPRITE = 45;
+    
+     while (!terminer) {
         while (SDL_PollEvent(&evenements)) {
             switch (evenements.type) {
             case SDL_QUIT:
@@ -153,42 +142,69 @@ SDL_Event evenements;
                 break;
             case SDL_KEYDOWN:
                 switch (evenements.key.keysym.sym) {
-                case SDLK_ESCAPE:
-                case SDLK_q:
-                    terminer = 1;
-                    break;
-                case SDLK_UP:
-                    posY -= 10;
-                  //  printf("haut \n ");
+               case SDLK_UP:
+               //s'il n'y a pas de mur dans la case juste au-dessus 
+               //(posY - 1) / 20:  calcule l'indice de la ligne dans le tableau (tab) correspondant à la case juste au-dessus 
+               //[posX / 20]: Cela calcule l'indice de la colonne dans le tableau correspondant à la case directement au-dessus 
+               //posX / 20 pour obtenir la colonne correspondante.
+                    if (posY > 0 && tab[(posY - 1) / 20][posX / 20] != '6') {
+                        posY -= 20;
+                    }
                     break;
                 case SDLK_DOWN:
-                    posY += 10;
+                // s'il n'y a pas de mur dans la case juste en dessous 
+                //(posY + 20) / 20: Cela calcule l'indice de la ligne dans le tableau (tab) 
+                //[posX / 20]: Cela calcule l'indice de la colonne dans le tableau 
+        
+                    if (posY + TAILLE_SPRITE < 320 && tab[(posY + 20) / 20][posX / 20] != '6') {
+                        posY += 20;
+                    }
                     break;
                 case SDLK_LEFT:
-                    posX -= 10;
+                //s'il n'y a pas de mur dans la case à gauche 
+                    if (posX > 0 && tab[posY / 20][(posX - 1) / 20] != '6') {
+                        posX -= 20;
+                    }
                     break;
                 case SDLK_RIGHT:
-                    posX += 10;
+                //s'il n'y a pas de mur dans la case à droite 
+                    if (posX + TAILLE_SPRITE < 700 && tab[posY / 20][(posX + 20) / 20] != '6') {
+                        posX += 20;
+                    }
                     break;
                 }
                 break;
-
             }
 
         }
+         // Boucle pour afficher le terrain
+        for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            char caractere = tab[i][j];
+            int indiceSprite = (caractere >= '0' && caractere <= '9') ? caractere - '0' : 0;
+
+            SDL_Rect destRect = { j * 32, i * 32, 32, 32 };
+            SDL_Rect srcRect = { indiceSprite * 32, 0, 32, 32 };
+
+            SDL_RenderCopy(renderer, spriteTexture, &srcRect, &destRect);
+           
+        }
+    }
+
 
         // Afficher le personnage
        SDL_Rect srcRect = { 0, 0, TAILLE_SPRITE, TAILLE_SPRITE };
        SDL_Rect destRect = { posX, posY, TAILLE_SPRITE, TAILLE_SPRITE };
        SDL_RenderCopy(renderer, textureSprite, &srcRect, &destRect);
 
+
         // Afficher la fenêtre et attendre la fermeture
         SDL_RenderPresent(renderer);
-        SDL_Delay(20); // Attendre 10 secondes avant de fermer la fenêtre
+        SDL_Delay(50); // Attendre 20 secondes avant de fermer la fenêtre
        
-
+       
     }
-     SDL_DestroyRenderer(renderer);
+        SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
 }
