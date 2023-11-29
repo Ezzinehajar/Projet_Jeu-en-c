@@ -33,7 +33,7 @@ void afficher_tab_2D(char** tab, int n, int m) {
 void taille_fichier(const char* nomFichier, int* nbLig, int* nbCol) {
     FILE* fichier = fopen(nomFichier, "r");
     if (fichier == NULL) {
-        perror("Erreur lors de l'ouverture du fichier");
+        perror("Erreur ");
         exit(EXIT_FAILURE);
     }
     int c;
@@ -119,19 +119,7 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
     SDL_FreeSurface(spriteSurface);
 
 
-    // Boucle pour afficher le terrain
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            char caractere = tab[i][j];
-            int indiceSprite = (caractere >= '0' && caractere <= '9') ? caractere - '0' : 0;
-
-            SDL_Rect destRect = { j * 32, i * 32, 32, 32 };
-            SDL_Rect srcRect = { indiceSprite * 32, 0, 32, 32 };
-
-            SDL_RenderCopy(renderer, spriteTexture, &srcRect, &destRect);
-        }
-    }
-
+   
       // Chargement des sprites
     SDL_Surface* surfaceSprite = SDL_LoadBMP("photo.bmp");
     SDL_Texture* textureSprite = SDL_CreateTextureFromSurface(renderer, surfaceSprite);
@@ -145,7 +133,8 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
 SDL_Event evenements;
     int terminer = 0;
     int TAILLE_SPRITE = 61;
-    while (!terminer) {
+    
+     while (!terminer) {
         while (SDL_PollEvent(&evenements)) {
             switch (evenements.type) {
             case SDL_QUIT:
@@ -153,22 +142,24 @@ SDL_Event evenements;
                 break;
             case SDL_KEYDOWN:
                 switch (evenements.key.keysym.sym) {
-                case SDLK_ESCAPE:
-                case SDLK_q:
-                    terminer = 1;
-                    break;
                 case SDLK_UP:
-                    posY -= 10;
+                      posY -= 10;
+                 
+                   //SDL_WaitEvent(&evenements);
                   //  printf("haut \n ");
                     break;
                 case SDLK_DOWN:
                     posY += 10;
+                
                     break;
                 case SDLK_LEFT:
                     posX -= 10;
+
+                
                     break;
                 case SDLK_RIGHT:
-                    posX += 10;
+                     posX += 10;
+                
                     break;
                 }
                 break;
@@ -176,19 +167,34 @@ SDL_Event evenements;
             }
 
         }
+         // Boucle pour afficher le terrain
+        for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            char caractere = tab[i][j];
+            int indiceSprite = (caractere >= '0' && caractere <= '9') ? caractere - '0' : 0;
+
+            SDL_Rect destRect = { j * 32, i * 32, 32, 32 };
+            SDL_Rect srcRect = { indiceSprite * 32, 0, 32, 32 };
+
+            SDL_RenderCopy(renderer, spriteTexture, &srcRect, &destRect);
+           
+        }
+    }
+
 
         // Afficher le personnage
        SDL_Rect srcRect = { 0, 0, TAILLE_SPRITE, TAILLE_SPRITE };
        SDL_Rect destRect = { posX, posY, TAILLE_SPRITE, TAILLE_SPRITE };
        SDL_RenderCopy(renderer, textureSprite, &srcRect, &destRect);
 
+
         // Afficher la fenêtre et attendre la fermeture
         SDL_RenderPresent(renderer);
-        SDL_Delay(20); // Attendre 10 secondes avant de fermer la fenêtre
+        SDL_Delay(50); // Attendre 10 secondes avant de fermer la fenêtre
        
-
+       
     }
-     SDL_DestroyRenderer(renderer);
+        SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
 }
