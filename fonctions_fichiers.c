@@ -143,23 +143,30 @@ SDL_Event evenements;
             case SDL_KEYDOWN:
                 switch (evenements.key.keysym.sym) {
                 case SDLK_UP:
-                      posY -= 10;
+                if (posY > 0) {
+                     posY -= 10;
+                 }
                  
                    //SDL_WaitEvent(&evenements);
                   //  printf("haut \n ");
                     break;
                 case SDLK_DOWN:
+                    if (posY+TAILLE_SPRITE < 320 ) { 
                     posY += 10;
-                
+                }
                     break;
                 case SDLK_LEFT:
+                    if(posX > 0){
                     posX -= 10;
+
+                }
 
                 
                     break;
                 case SDLK_RIGHT:
+                     if( posX+TAILLE_SPRITE < 700){
                      posX += 10;
-                
+                }
                     break;
                 }
                 break;
