@@ -121,7 +121,7 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
 
    
       // Chargement des sprites
-    SDL_Surface* surfaceSprite = SDL_LoadBMP("photo.bmp");
+    SDL_Surface* surfaceSprite = SDL_LoadBMP("la.bmp");
     SDL_Texture* textureSprite = SDL_CreateTextureFromSurface(renderer, surfaceSprite);
     SDL_FreeSurface(surfaceSprite);
 
@@ -132,7 +132,7 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
 
 SDL_Event evenements;
     int terminer = 0;
-    int TAILLE_SPRITE = 45;
+    int TAILLE_SPRITE = 30;
     
      while (!terminer) {
         while (SDL_PollEvent(&evenements)) {
@@ -142,38 +142,28 @@ SDL_Event evenements;
                 break;
             case SDL_KEYDOWN:
                 switch (evenements.key.keysym.sym) {
-               case SDLK_UP:
-               //s'il n'y a pas de mur dans la case juste au-dessus 
-               //(posY - 1) / 20:  calcule l'indice de la ligne dans le tableau (tab) correspondant à la case juste au-dessus 
-               //[posX / 20]: Cela calcule l'indice de la colonne dans le tableau correspondant à la case directement au-dessus 
-               //posX / 20 pour obtenir la colonne correspondante.
-                    if (posY > 0 && tab[(posY - 1) / 20][posX / 20] != '6') {
-                        posY -= 20;
-                    }
-                    break;
-                case SDLK_DOWN:
-                // s'il n'y a pas de mur dans la case juste en dessous 
-                //(posY + 20) / 20: Cela calcule l'indice de la ligne dans le tableau (tab) 
-                //[posX / 20]: Cela calcule l'indice de la colonne dans le tableau 
-        
-                    if (posY + TAILLE_SPRITE < 320 && tab[(posY + 20) / 20][posX / 20] != '6') {
-                        posY += 20;
-                    }
-                    break;
-                case SDLK_LEFT:
-                //s'il n'y a pas de mur dans la case à gauche 
-                    if (posX > 0 && tab[posY / 20][(posX - 1) / 20] != '6') {
-                        posX -= 20;
-                    }
-                    break;
-                case SDLK_RIGHT:
-                //s'il n'y a pas de mur dans la case à droite 
-                    if (posX + TAILLE_SPRITE < 700 && tab[posY / 20][(posX + 20) / 20] != '6') {
-                        posX += 20;
-                    }
-                    break;
-                }
-                break;
+            case SDLK_UP:
+              if (posY > 0 && tab[(posY - 1) / 30][posX / 30] != '6') {
+                 posY -= 10;
+              }
+            break;
+            case SDLK_DOWN:
+                  if (posY + TAILLE_SPRITE < 320 && tab[(posY + TAILLE_SPRITE) / 30][posX / 30] != '6') {
+                  posY += 10;
+                  }
+           break;
+            case SDLK_LEFT:
+                 if (posX > 0 && tab[posY / 30][(posX - 30) / 30] != '6') {
+                  posX -= 10;
+                 }
+             break;
+           case SDLK_RIGHT:
+                if (posX + TAILLE_SPRITE < 700 && tab[posY / 30][(posX + TAILLE_SPRITE) / 30] != '6') {
+                 posX += 10;
+            }
+           break;
+            }
+            break;
             }
 
         }
