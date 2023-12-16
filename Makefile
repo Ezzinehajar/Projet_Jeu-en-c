@@ -1,10 +1,19 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 `sdl2-config --cflags`
-LIBS = `sdl2-config --libs` -lSDL2_image
+CFLAGS = -Wall -Wextra -std=c99 $(shell sdl2-config --cflags)
+LIBS = $(shell sdl2-config --libs) -lSDL2_image -lSDL2_ttf
 
-main: main.c fonctions_fichiers.c
-	$(CC) $(CFLAGS) -o main main.c fonctions_fichiers.c $(LIBS)
+SRC = main.c fonctions_fichiers.c
+OBJ = $(SRC:.c=.o)
+
+EXECUTABLE = main
+
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJ)
+	$(CC) $^ -o $@ $(LIBS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f main
-
+	rm -f $(EXECUTABLE) $(OBJ)

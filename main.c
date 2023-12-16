@@ -11,6 +11,7 @@ int main() {
 
     // Libérer la mémoire allouée pour le tableau
     desallouer_tab_2D(tableauTerrain, 10);
+    
 
     return 0;
 
