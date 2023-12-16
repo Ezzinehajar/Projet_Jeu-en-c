@@ -160,7 +160,18 @@ void afficher_graphe_sdl(char** tab, int n, int m) {
     // Chargement des sprites
     SDL_Texture* textureSprite = charger_image_transparente("la.bmp", renderer, 0, 0, 0);
 
+<<<<<<< HEAD
     // Position du personnage
+=======
+   
+      // Chargement des sprites
+    SDL_Surface* surfaceSprite = SDL_LoadBMP("la.bmp");
+    SDL_Texture* textureSprite = SDL_CreateTextureFromSurface(renderer, surfaceSprite);
+    SDL_FreeSurface(surfaceSprite);
+
+
+// Position du personnage
+>>>>>>> 03d001d08ab4fa1308d34b7bd085c034b9bcae43
     int posX = 0;
     int posY = 0;
 
@@ -185,6 +196,7 @@ boutonQuitter.action = QUITTER;
     SDL_Event evenements;
     int terminer = 0;
     int TAILLE_SPRITE = 30;
+<<<<<<< HEAD
 
     TTF_Init();  // Initialiser SDL_ttf
 
@@ -247,8 +259,55 @@ boutonQuitter.action = QUITTER;
                         }
                     }
                     break;
+=======
+    
+     while (!terminer) {
+        while (SDL_PollEvent(&evenements)) {
+            switch (evenements.type) {
+            case SDL_QUIT:
+                terminer = 1;
+                break;
+            case SDL_KEYDOWN:
+                switch (evenements.key.keysym.sym) {
+            case SDLK_UP:
+              if (posY > 0 && tab[(posY - 1) / 30][posX / 30] != '6') {
+                 posY -= 10;
+              }
+            break;
+            case SDLK_DOWN:
+                  if (posY + TAILLE_SPRITE < 320 && tab[(posY + TAILLE_SPRITE) / 30][posX / 30] != '6') {
+                  posY += 10;
+                  }
+           break;
+            case SDLK_LEFT:
+                 if (posX > 0 && tab[posY / 30][(posX - 30) / 30] != '6') {
+                  posX -= 10;
+                 }
+             break;
+           case SDLK_RIGHT:
+                if (posX + TAILLE_SPRITE < 700 && tab[posY / 30][(posX + TAILLE_SPRITE) / 30] != '6') {
+                 posX += 10;
+            }
+           break;
+            }
+            break;
+>>>>>>> 03d001d08ab4fa1308d34b7bd085c034b9bcae43
             }
         }
+         // Boucle pour afficher le terrain
+        for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            char caractere = tab[i][j];
+            int indiceSprite = (caractere >= '0' && caractere <= '9') ? caractere - '0' : 0;
+
+            SDL_Rect destRect = { j * 32, i * 32, 32, 32 };
+            SDL_Rect srcRect = { indiceSprite * 32, 0, 32, 32 };
+
+            SDL_RenderCopy(renderer, spriteTexture, &srcRect, &destRect);
+           
+        }
+    }
+
 
         SDL_RenderClear(renderer);
 
@@ -289,6 +348,7 @@ boutonQuitter.action = QUITTER;
             SDL_RenderCopy(renderer, textureSprite, &srcRectPerso, &destRectPerso);
         }
 
+<<<<<<< HEAD
         SDL_RenderPresent(renderer);
         SDL_Delay(50);
     }
@@ -302,5 +362,17 @@ boutonQuitter.action = QUITTER;
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+=======
+
+        // Afficher la fenêtre et attendre la fermeture
+        SDL_RenderPresent(renderer);
+        SDL_Delay(50); // Attendre 20 secondes avant de fermer la fenêtre
+       
+       
+    }
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+>>>>>>> 03d001d08ab4fa1308d34b7bd085c034b9bcae43
 }
 
