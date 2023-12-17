@@ -14,7 +14,7 @@ extern int etatJeu;
 
 typedef struct {
     SDL_Rect rect;  // Rectangle de position et de taille du bouton
-    int action;      // Action associée au bouton (par exemple, JOUER, QUITTER)
+    int action;      // Action associée au bouton 
 } Bouton;
 
 

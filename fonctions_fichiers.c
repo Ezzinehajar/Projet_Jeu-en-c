@@ -15,23 +15,22 @@ char** allouer_tab_2D(int n, int m) {
     }
     return tab;
 }
-SDL_Texture* charger_image_transparente(const char* nomfichier,SDL_Renderer* renderer,Uint8 r, Uint8 g, Uint8 b){
-    SDL_Texture *texture = NULL ;
-    SDL_Surface *surface = NULL;
+
+SDL_Texture* charger_image_transparente(const char* nomfichier, SDL_Renderer* renderer, Uint8 r, Uint8 g, Uint8 b) {
+    SDL_Texture* texture = NULL;
+    SDL_Surface* surface = NULL;
     surface = SDL_LoadBMP(nomfichier);
-    // Récupérer la valeur (RGB) du pixel au format donné.
-    //SDL_MapRGB utilisée pour convertir une couleur au format RGB (Rouge, Vert, Bleu) en une valeur entière (Uint32) qui est compatible avec le format de pixel de la surface SDL. Cela permet de représenter une couleur dans un format qui peut être utilisé efficacement pour le rendu graphique.
-    const SDL_PixelFormat* format = surface->format ;
-    Uint32 couleur = SDL_MapRGB(format,r,g,b);
-    // Définir la couleur (pixel transparent) dans une surface.
-    //SDL_SetColorKey est utilisée pour spécifier une couleur de transparence (color key) dans une surface SDL. Lorsque vous définissez une couleur de transparence, toutes les zones de la surface qui correspondent à cette couleur spécifiée seront rendues transparentes lors du rendu
-    SDL_SetColorKey(surface,SDL_TRUE,couleur);
-    // Convertir la surface de l’image au format texture avant de l’appliquer
-    texture = SDL_CreateTextureFromSurface(renderer,surface) ;
-     //liberer la surface
+
+    const SDL_PixelFormat* format = surface->format;
+    Uint32 couleur = SDL_MapRGB(format, r, g, b);
+
+    SDL_SetColorKey(surface, SDL_TRUE, couleur);
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+
     SDL_FreeSurface(surface);
     return texture;
 }
+
 void desallouer_tab_2D(char** tab, int n) {
     for (int i = 0; i < n; i++) {
         free(tab[i]);
@@ -74,11 +73,9 @@ void taille_fichier(const char* nomFichier, int* nbLig, int* nbCol) {
 
 char** lire_fichier(const char* nomFichier) {
     int nbLig, nbCol;
-    
     taille_fichier(nomFichier, &nbLig, &nbCol);
     
     FILE* fichier = fopen(nomFichier, "r");
-    
     if (fichier == NULL) {
         perror("Erreur lors de l'ouverture du fichier");
         exit(1);
@@ -90,7 +87,7 @@ char** lire_fichier(const char* nomFichier) {
     fclose(fichier);
     return tab;
 }
-//Exercice 2 
+
 char** modifier_caractere(char** tab, int n, int m, char ancien, char nouveau) {
     char** nouveauTab = allouer_tab_2D(n, m);
     for (int i = 0; i < n; i++) {
@@ -105,9 +102,8 @@ char** modifier_caractere(char** tab, int n, int m, char ancien, char nouveau) {
     return nouveauTab;
 }
 
-
 void ecrire_fichier(const char* nomFichier, char** tab, int n, int m) {
-	FILE* fichier = fopen(nomFichier, "w");
+    FILE* fichier = fopen(nomFichier, "w");
     if (fichier == NULL) {
         printf("Impossible d'ouvrir le fichier.\n");
         exit(1);
@@ -123,63 +119,50 @@ void ecrire_fichier(const char* nomFichier, char** tab, int n, int m) {
 }
 
 SDL_Texture* charger_texte(const char* texte, SDL_Renderer* renderer, TTF_Font* police, SDL_Color couleurTexte) {
-    // Charger le texte dans une surface
     SDL_Surface* surfaceTexte = TTF_RenderText_Solid(police, texte, couleurTexte);
     if (surfaceTexte == NULL) {
         fprintf(stderr, "Erreur lors du rendu du texte : %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
 
-    // Convertir la surface en texture
     SDL_Texture* textureTexte = SDL_CreateTextureFromSurface(renderer, surfaceTexte);
     if (textureTexte == NULL) {
         fprintf(stderr, "Erreur lors de la création de la texture : %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
 
-    // Libérer la surface, elle n'est plus nécessaire
     SDL_FreeSurface(surfaceTexte);
-
     return textureTexte;
 }
 
- 
-
-
 void afficher_graphe_sdl(char** tab, int n, int m) {
-    // Initialiser SDL et créer une fenêtre
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window* window = SDL_CreateWindow("Terrain", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 700, 320, 0);
+    SDL_Window* window = SDL_CreateWindow("Jeu Labyrinthe", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 700, 320, 0);
     SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    // Charger les sprites depuis le fichier pavage.bmp
     SDL_Surface* spriteSurface = SDL_LoadBMP("pavage.bmp");
     SDL_Texture* spriteTexture = SDL_CreateTextureFromSurface(renderer, spriteSurface);
     SDL_FreeSurface(spriteSurface);
 
-    // Chargement des sprites
     SDL_Texture* textureSprite = charger_image_transparente("la.bmp", renderer, 0, 0, 0);
 
-    // Position du personnage
     int posX = 0;
     int posY = 0;
 
     Bouton boutonJouer;
     Bouton boutonQuitter;
 
-// Initialisation des boutons
-int boutonLargeur = 150;
-int boutonHauteur = 50;
+    int boutonLargeur = 150;
+    int boutonHauteur = 50;
 
-int centreX = 700 / 2; // Centre horizontal de la fenêtre
-int centreY = 320 / 2; // Centre vertical de la fenêtre
+    int centreX = 700 / 2;
+    int centreY = 320 / 2;
 
-boutonJouer.rect = (SDL_Rect){centreX - boutonLargeur / 2, centreY - boutonHauteur, boutonLargeur, boutonHauteur};
-boutonJouer.action = JOUER;
+    boutonJouer.rect = (SDL_Rect){centreX - boutonLargeur / 2, centreY - boutonHauteur, boutonLargeur, boutonHauteur};
+    boutonJouer.action = JOUER;
 
-boutonQuitter.rect = (SDL_Rect){centreX - boutonLargeur / 2, centreY, boutonLargeur, boutonHauteur};
-boutonQuitter.action = QUITTER;
-
+    boutonQuitter.rect = (SDL_Rect){centreX - boutonLargeur / 2, centreY, boutonLargeur, boutonHauteur};
+    boutonQuitter.action = QUITTER;
 
     int dansMenu = 1;
     SDL_Event evenements;
@@ -187,17 +170,25 @@ boutonQuitter.action = QUITTER;
     int TAILLE_SPRITE = 30;
     int timer = 0;
 
-
-    TTF_Init();  // Initialiser SDL_ttf
-
-    // Charger la police (assurez-vous que le fichier de police existe)
-    TTF_Font* police = TTF_OpenFont("arial.ttf", 24);
+    TTF_Init();
+    TTF_Font* police = TTF_OpenFont("Messages.ttf", 24);
     if (police == NULL) {
         fprintf(stderr, "Erreur lors du chargement de la police : %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
+     TTF_Font* policeMessage = TTF_OpenFont("Arcane Nine.otf", 15);
+    if (policeMessage == NULL) {
+        fprintf(stderr, "Erreur lors du chargement de la police : %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
+     TTF_Font* policeTemps = TTF_OpenFont("arial.ttf", 15);
+    if (policeTemps == NULL) {
+        fprintf(stderr, "Erreur lors du chargement de la police : %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
 
-    SDL_Color couleurTexte = {255, 255, 255, 255};
+    SDL_Color couleurTextebouton = {245, 245, 220, 255};
+    SDL_Color couleurTexteMessage = {139, 117, 94, 255};;
 
     while (!terminer) {
         while (SDL_PollEvent(&evenements)) {
@@ -230,22 +221,17 @@ boutonQuitter.action = QUITTER;
                     }
                     break;
                 case SDL_MOUSEBUTTONDOWN:
-                    // Vérifier si le clic est dans un bouton du menu
                     if (evenements.button.button == SDL_BUTTON_LEFT) {
                         int mouseX = evenements.button.x;
                         int mouseY = evenements.button.y;
 
-
-                      SDL_Point pointJouer = { mouseX, mouseY };
-                            if (SDL_PointInRect(&pointJouer, &boutonJouer.rect)) {
-                            // Action lorsque le bouton "Jouer" est cliqué
+                        SDL_Point pointJouer = {mouseX, mouseY};
+                        if (SDL_PointInRect(&pointJouer, &boutonJouer.rect)) {
                             printf("Bouton Jouer cliqué!\n");
                             dansMenu = 0;
-                       // Quitter le menu
                         } else if (SDL_PointInRect(&pointJouer, &boutonQuitter.rect)) {
-                            // Action lorsque le bouton "Quitter" est cliqué
                             printf("Bouton Quitter cliqué!\n");
-                            terminer = 1; // Quitter l'application
+                            terminer = 1;
                         }
                     }
                     break;
@@ -255,28 +241,29 @@ boutonQuitter.action = QUITTER;
         SDL_RenderClear(renderer);
 
         if (dansMenu) {
-            // Afficher le menu avec les boutons
-            SDL_SetRenderDrawColor(renderer, 139, 69, 19, 255);            
+            SDL_SetRenderDrawColor(renderer, 139, 69, 19, 255);
             SDL_RenderFillRect(renderer, &boutonJouer.rect);
             SDL_RenderFillRect(renderer, &boutonQuitter.rect);
 
-            // Afficher du texte sur les boutons
-            SDL_Texture* textureTexteJouer = charger_texte("Jouer", renderer, police, couleurTexte);
-            SDL_Texture* textureTexteQuitter = charger_texte("Quitter", renderer, police, couleurTexte);
+            SDL_Texture* textureTexteJouer = charger_texte("Jouer", renderer, police, couleurTextebouton);
+            SDL_Texture* textureTexteQuitter = charger_texte("Quitter", renderer, police, couleurTextebouton);
 
             SDL_Rect destRectJouer = {boutonJouer.rect.x + 10, boutonJouer.rect.y + 10, boutonJouer.rect.w - 20, boutonJouer.rect.h - 20};
             SDL_Rect destRectQuitter = {boutonQuitter.rect.x + 10, boutonQuitter.rect.y + 10, boutonQuitter.rect.w - 20, boutonQuitter.rect.h - 20};
 
-            SDL_RenderCopy(renderer, textureTexteJouer,            NULL, &destRectJouer);
+            SDL_RenderCopy(renderer, textureTexteJouer, NULL, &destRectJouer);
             SDL_RenderCopy(renderer, textureTexteQuitter, NULL, &destRectQuitter);
 
             SDL_DestroyTexture(textureTexteJouer);
             SDL_DestroyTexture(textureTexteQuitter);
 
+            // Afficher le message sur le temps
+            SDL_Texture* textureMessage = charger_texte("Trouvez le chemin en 20 secondes pour gagner !", renderer, policeMessage,couleurTexteMessage);
+            SDL_Rect destRectMessage = {20, 20, 650, 30};  
+            SDL_RenderCopy(renderer, textureMessage, NULL, &destRectMessage);
+            SDL_DestroyTexture(textureMessage);
 
         } else {
-            // Afficher le terrain
-            
             for (int i = 0; i < n; ++i) {
                 for (int j = 0; j < m; ++j) {
                     char caractere = tab[i][j];
@@ -288,50 +275,37 @@ boutonQuitter.action = QUITTER;
                 }
             }
 
-            // Afficher le personnage
             SDL_Rect srcRectPerso = {0, 0, TAILLE_SPRITE, TAILLE_SPRITE};
             SDL_Rect destRectPerso = {posX, posY, TAILLE_SPRITE, TAILLE_SPRITE};
             SDL_RenderCopy(renderer, textureSprite, &srcRectPerso, &destRectPerso);
-            // À l'intérieur de votre boucle principale
-             if (!dansMenu) {
+
+            if (!dansMenu) {
                 timer = SDL_GetTicks() / 1000;
 
-                 // Afficher le timer
-                 char timerTexte[50];
+                char timerTexte[50];
                 sprintf(timerTexte, "Temps : %d", timer);
 
-                SDL_Texture* textureTimer = charger_texte(timerTexte, renderer, police, couleurTexte);
+                SDL_Texture* textureTimer = charger_texte(timerTexte, renderer, policeTemps, couleurTextebouton);
 
-                 int timerPosX = 700 - 67; // Ajustez ces valeurs selon vos besoins
-                 int timerPosY = 10;
-                 int timerWidth = 60;
-                 int timerHeight = 30;
+                int timerPosX = 700 - 67;
+                int timerPosY = 10;
+                int timerWidth = 60;
+                int timerHeight = 30;
 
-                 SDL_Rect destRectTimer = {timerPosX, timerPosY, timerWidth, timerHeight};
-                 SDL_RenderCopy(renderer, textureTimer, NULL, &destRectTimer);
+                SDL_Rect destRectTimer = {timerPosX, timerPosY, timerWidth, timerHeight};
+                SDL_RenderCopy(renderer, textureTimer, NULL, &destRectTimer);
 
                 SDL_DestroyTexture(textureTimer);
-             
+            }
 
-
-
-
-    }   
-
-
-
-}
-
-
+        }
 
         SDL_RenderPresent(renderer);
         SDL_Delay(50);
     }
 
-    // Libération des ressources
     TTF_CloseFont(police);
-    TTF_Quit();  // Quitter SDL_ttf
-
+    TTF_Quit();
     SDL_DestroyTexture(spriteTexture);
     SDL_DestroyTexture(textureSprite);
     SDL_DestroyRenderer(renderer);
