@@ -143,7 +143,7 @@ SDL_Texture* charger_texte(const char* texte, SDL_Renderer* renderer, TTF_Font* 
     return textureTexte;
 }
 
-
+ 
 
 
 void afficher_graphe_sdl(char** tab, int n, int m) {
@@ -185,6 +185,8 @@ boutonQuitter.action = QUITTER;
     SDL_Event evenements;
     int terminer = 0;
     int TAILLE_SPRITE = 30;
+    int timer = 0;
+
 
     TTF_Init();  // Initialiser SDL_ttf
 
@@ -270,6 +272,8 @@ boutonQuitter.action = QUITTER;
 
             SDL_DestroyTexture(textureTexteJouer);
             SDL_DestroyTexture(textureTexteQuitter);
+
+
         } else {
             // Afficher le terrain
             
@@ -288,7 +292,37 @@ boutonQuitter.action = QUITTER;
             SDL_Rect srcRectPerso = {0, 0, TAILLE_SPRITE, TAILLE_SPRITE};
             SDL_Rect destRectPerso = {posX, posY, TAILLE_SPRITE, TAILLE_SPRITE};
             SDL_RenderCopy(renderer, textureSprite, &srcRectPerso, &destRectPerso);
-        }
+            // À l'intérieur de votre boucle principale
+             if (!dansMenu) {
+                timer = SDL_GetTicks() / 1000;
+
+                 // Afficher le timer
+                 char timerTexte[50];
+                sprintf(timerTexte, "Temps : %d", timer);
+
+                SDL_Texture* textureTimer = charger_texte(timerTexte, renderer, police, couleurTexte);
+
+                 int timerPosX = 700 - 67; // Ajustez ces valeurs selon vos besoins
+                 int timerPosY = 10;
+                 int timerWidth = 60;
+                 int timerHeight = 30;
+
+                 SDL_Rect destRectTimer = {timerPosX, timerPosY, timerWidth, timerHeight};
+                 SDL_RenderCopy(renderer, textureTimer, NULL, &destRectTimer);
+
+                SDL_DestroyTexture(textureTimer);
+             
+
+
+
+
+    }   
+
+
+
+}
+
+
 
         SDL_RenderPresent(renderer);
         SDL_Delay(50);

@@ -6,6 +6,11 @@
 
 #define JOUER 1
 #define QUITTER 2
+extern int timer;
+
+extern int etatJeu;
+
+
 
 typedef struct {
     SDL_Rect rect;  // Rectangle de position et de taille du bouton
@@ -19,6 +24,7 @@ SDL_Texture* charger_texte(const char* message, SDL_Renderer* renderer,TTF_Font 
 
 //fonction pour charger une image dans une texture
 SDL_Texture* charger_image(const char* nomfichier, SDL_Renderer *renderer);
+
 
 
 
